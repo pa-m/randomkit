@@ -1,6 +1,14 @@
-# randomkit - generate random sequences like numpy ones
+# randomkit
 
-Example
+generate random sequences like numpy ones
+
+[![Build Status](https://travis-ci.org/pa-m/randomkit.svg?branch=master)](https://travis-ci.org/pa-m/randomkit)
+[![Code Coverage](https://codecov.io/gh/pa-m/randomkit/branch/master/graph/badge.svg)](https://codecov.io/gh/pa-m/randomkit)
+[![Go Report Card](https://goreportcard.com/badge/github.com/pa-m/randomkit)](https://goreportcard.com/report/github.com/pa-m/randomkit)
+[![GoDoc](https://godoc.org/github.com/pa-m/randomkit?status.svg)](https://godoc.org/github.com/pa-m/randomkit)
+
+
+### Example
 
 ```go
 	var (
