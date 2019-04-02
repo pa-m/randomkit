@@ -1,4 +1,6 @@
 # v https://github.com/codecov/example-go
+
+# CODECOV_TOKEN="742b6ab5-de5b-49e1-943d-e65efa19007a"
 language: go
 
 go:
@@ -6,6 +8,9 @@ go:
   - 1.11.x
   - 1.12.x
   - tip
+
+env:
+  - CODECOV_TOKEN=742b6ab5-de5b-49e1-943d-e65efa19007a
 
 before_install:
   - go get -t -v ./... && go build -v ./...
