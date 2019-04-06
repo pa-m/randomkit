@@ -13,6 +13,9 @@ import (
 const rkStateLen = 624
 
 // RKState is a random source based on numpy's randomkit
+// it implements "golang.org/x/exp/rand".Source
+// and can be used as "math/rand".Source via AsMathRandSource
+// but RKState Float64 and NormFloat64 methods must be used directly to reproduce original randomkit numpy sequences.
 type RKState struct {
 	key           [rkStateLen]uint64
 	pos           int

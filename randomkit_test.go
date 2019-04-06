@@ -3,11 +3,17 @@ package randomkit
 import (
 	"fmt"
 	"math"
+	mathRand "math/rand"
 
-	"golang.org/x/exp/rand"
+	expRand "golang.org/x/exp/rand"
 )
 
-var _ rand.Source = &RKState{}
+var (
+	_ expRand.Source    = &RKState{}
+	_ expRand.Source    = (&RKState{}).AsExpRandSource()
+	_ mathRand.Source   = (&RKState{}).AsMathRandSource()
+	_ mathRand.Source64 = (&RKState{}).AsMathRandSource()
+)
 
 func ExampleRKState() {
 	var (
@@ -22,15 +28,6 @@ func ExampleRKState() {
 	a = make([]float64, 5)
 	for i := range a {
 		a[i] = state.Float64()
-	}
-
-	expected = []float64{0.07630829, 0.77991879, 0.43840923, 0.72346518, 0.97798951}
-	ok = true
-	for i := range a {
-		ok = ok && math.Abs(expected[i]-a[i]) < tol
-	}
-	if !ok {
-		fmt.Printf("expected %g got %g", expected, a)
 	}
 
 	expected = []float64{0.07630829, 0.77991879, 0.43840923, 0.72346518, 0.97798951}
