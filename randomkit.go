@@ -1,11 +1,11 @@
 package randomkit
 
 import (
-	"encoding/binary"
+	// "encoding/binary"
 	"errors"
 	"math"
-	"os"
-	"time"
+	// "os"
+	// "time"
 )
 
 // port some functions of https://github.com/numpy/numpy/blob/master/numpy/random/mtrand/randomkit.c
@@ -50,6 +50,7 @@ func (state *RKState) Seed(seed uint64) {
 }
 
 /* Thomas Wang 32 bits integer hash function */
+/*
 func rkHash(key uint64) uint64 {
 	key += ^(key << 15)
 	key ^= (key >> 10)
@@ -78,10 +79,11 @@ func rkDevfill(buffer interface{}, size int, strong bool) error {
 	return errNoDev
 
 }
-
+*/
+/*
 func rkRandomseed(state *RKState) error {
 	if rkDevfill(state.key, rkStateLen*4, false) == nil {
-		/* ensures non-zero key */
+		// ensures non-zero key
 		state.key[0] |= 0x80000000
 		state.pos = rkStateLen
 		state.gauss = 0
@@ -97,7 +99,7 @@ func rkRandomseed(state *RKState) error {
 	state.Seed(uint64(time.Now().UnixNano()))
 	return errNoDev
 }
-
+*/
 /* Magic Mersenne Twister constants */
 const (
 	N         = 624

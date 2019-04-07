@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"math"
 	mathRand "math/rand"
+	"testing"
 
 	expRand "golang.org/x/exp/rand"
 )
@@ -62,4 +63,45 @@ func ExampleRKState() {
 		fmt.Println("clone failure")
 	}
 	// Output:
+}
+
+func TestSeed(t *testing.T) {
+	src := NewRandomkitSource(7)
+	t.Run("Float64", func(t *testing.T) {
+		if math.Abs(src.Float64()-0.07630829) > 1e-8 {
+			t.Fail()
+		}
+	})
+	msrc := src.AsMathRandSource()
+	t.Run("math/rand/Source/Int63", func(t *testing.T) {
+		msrc.Seed(7)
+		ex, ac := int64(1407639518939636932), msrc.Int63()
+		if ac != ex {
+			t.Errorf("expected %d got %d", ex, ac)
+		}
+	})
+	t.Run("math/rand/Source/Uint64", func(t *testing.T) {
+		msrc.Seed(7)
+		ex, ac := uint64(1407639518939636932), msrc.Uint64()
+		if ac != ex {
+			t.Errorf("expected %d got %d", ex, ac)
+		}
+	})
+	t.Run("math/rand/Source/Clone", func(t *testing.T) {
+		msrc.Seed(7)
+		msrc2 := msrc.Clone()
+		ex := int64(1407639518939636932)
+		if msrc2.Int63() != ex || msrc.Clone().Int63() != ex {
+			t.Errorf("expected %d", ex)
+		}
+	})
+	t.Run("Uint64s", func(t *testing.T) {
+		ex := "[47 68 25 67 83]"
+		src.Seed(7)
+		ac := make([]uint64, 5, 5)
+		src.Uint64s(0, 100, ac)
+		if fmt.Sprintf("%d", ac) != ex {
+			t.Errorf("excepted %s got %s", ex, fmt.Sprintf("%d", ac))
+		}
+	})
 }
