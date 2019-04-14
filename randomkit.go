@@ -4,6 +4,8 @@ import (
 	// "encoding/binary"
 	"errors"
 	"math"
+
+	"golang.org/x/exp/rand"
 	// "os"
 	// "time"
 )
@@ -240,8 +242,7 @@ func NewRandomkitSource(seed uint64) (state *RKState) {
 }
 
 // Clone clones the randomkit state
-func (state *RKState) Clone() (newstate *RKState) {
-	newstate = &RKState{}
-	*newstate = *state
-	return
+func (state *RKState) Clone() rand.Source {
+	newstate := *state
+	return &newstate
 }

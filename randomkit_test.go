@@ -91,8 +91,11 @@ func TestSeed(t *testing.T) {
 		msrc.Seed(7)
 		msrc2 := msrc.Clone()
 		ex := int64(1407639518939636932)
-		if msrc2.Int63() != ex || msrc.Clone().Int63() != ex {
+		if msrc2.Int63() != ex {
 			t.Errorf("expected %d", ex)
+		}
+		if msrc.Clone().Int63() != ex {
+			t.Errorf("expected %d for clone", ex)
 		}
 	})
 	t.Run("Uint64s", func(t *testing.T) {
