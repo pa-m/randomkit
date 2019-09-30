@@ -4,6 +4,7 @@ import (
 	// "encoding/binary"
 	"errors"
 	"math"
+	"sort"
 
 	"golang.org/x/exp/rand"
 	// "os"
@@ -245,4 +246,89 @@ func NewRandomkitSource(seed uint64) (state *RKState) {
 func (state *RKState) Clone() rand.Source {
 	newstate := *state
 	return &newstate
+}
+
+const maxUint64 = (1 << 64) - 1
+
+// Uint64n returns, as a uint64, a pseudo-random number in [0,n).
+// It is guaranteed more uniform than taking a Source value mod n
+// for any n that is not a power of 2.
+func (state *RKState) Uint64n(n uint64) uint64 {
+	if n&(n-1) == 0 { // n is power of two, can mask
+		if n == 0 {
+			panic("invalid argument to Uint64n")
+		}
+		return state.Uint64() & (n - 1)
+	}
+	// If n does not divide v, to avoid bias we must not use
+	// a v that is within maxUint64%n of the top of the range.
+	v := state.Uint64()
+	if v > maxUint64-n { // Fast check.
+		ceiling := maxUint64 - maxUint64%n
+		for v >= ceiling {
+			v = state.Uint64()
+		}
+	}
+
+	return v % n
+}
+
+// Intn returns, as an int, a non-negative pseudo-random number in [0,n).
+// It panics if n <= 0.
+func (state *RKState) Intn(n int) int {
+	if n <= 0 {
+		panic("invalid argument to Intn")
+	}
+	// TODO: Avoid some 64-bit ops to make it more efficient on 32-bit machines.
+	return int(state.Uint64n(uint64(n)))
+}
+
+func (state *RKState) Shuffle(n int, swap func(i, j int)) {
+	for i := n - 1; i >= 1; i-- {
+		swap(i, int(random_interval(state, uint64(i))))
+	}
+	return
+}
+
+func (state *RKState) Perm(n int) []int {
+	idx := make([]int, 10)
+	for i := range idx {
+		idx[i] = i
+	}
+	slice := sort.IntSlice(idx)
+	state.Shuffle(slice.Len(), slice.Swap)
+	return idx
+}
+
+func random_interval(state *RKState, max uint64) uint64 {
+	var mask, value uint64
+	if max == 0 {
+		return 0
+	}
+
+	mask = max
+
+	/* Smallest bit mask >= max */
+	mask |= mask >> 1
+	mask |= mask >> 2
+	mask |= mask >> 4
+	mask |= mask >> 8
+	mask |= mask >> 16
+	mask |= mask >> 32
+
+	/* Search a random value in [0..mask] <= max */
+	var ok bool
+	if max <= 0xffffffff {
+
+		for !ok {
+			value = uint64(state.Uint32() & uint32(mask))
+			ok = value <= max
+		}
+	} else {
+		for !ok {
+			value = (state.Uint64() & mask)
+			ok = value <= max
+		}
+	}
+	return value
 }

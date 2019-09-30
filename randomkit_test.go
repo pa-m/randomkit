@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"math"
 	mathRand "math/rand"
+	"sort"
 	"testing"
 
 	expRand "golang.org/x/exp/rand"
@@ -107,4 +108,56 @@ func TestSeed(t *testing.T) {
 			t.Errorf("excepted %s got %s", ex, fmt.Sprintf("%d", ac))
 		}
 	})
+}
+
+func TestRKState_Intn(t *testing.T) {
+	src := NewRandomkitSource(42)
+	const N = 178
+	seq := make([]int, N)
+	for i := range seq {
+		seq[i] = i
+	}
+	//fmt.Println(idx)
+	s := sort.IntSlice(seq)
+	for i := s.Len() - 1; i >= 1; i-- {
+		//j := rand.Intn(i + 1)
+		j := src.Intn(i + 1)
+		s.Swap(i, j)
+	}
+
+	fmt.Println(seq)
+}
+
+func TestShuffle(t *testing.T) {
+	/*
+		np.random.seed(7)
+		X=np.arange(10)
+		np.random.shuffle(X)
+		X
+
+		=> [8 5 0 2 1 9 7 3 6 4]
+	*/
+	src := NewRandomkitSource(7)
+	idx := make([]float64, 10)
+	for i := range idx {
+		idx[i] = float64(i)
+	}
+	slice := sort.Float64Slice(idx)
+	src.Shuffle(slice.Len(), slice.Swap)
+	expected := fmt.Sprint([]float64{8, 5, 0, 2, 1, 9, 7, 3, 6, 4})
+	actual := fmt.Sprint(idx)
+	if actual != expected {
+		t.Errorf("expected %s, got %s", expected, actual)
+	}
+}
+
+func TestPerm(t *testing.T) {
+	src := NewRandomkitSource(7)
+	idx := src.Perm(10)
+	expected := fmt.Sprint([]float64{8, 5, 0, 2, 1, 9, 7, 3, 6, 4})
+	actual := fmt.Sprint(idx)
+	if actual != expected {
+		t.Errorf("expected %s, got %s", expected, actual)
+	}
+
 }
