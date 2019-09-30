@@ -291,7 +291,7 @@ func (state *RKState) Shuffle(n int, swap func(i, j int)) {
 }
 
 func (state *RKState) Perm(n int) []int {
-	idx := make([]int, 10)
+	idx := make([]int, n)
 	for i := range idx {
 		idx[i] = i
 	}
