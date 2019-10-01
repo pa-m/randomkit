@@ -11,7 +11,6 @@ import (
 )
 
 var (
-	_ Source            = &RKState{}
 	_ expRand.Source    = &RKState{}
 	_ mathRand.Source   = (&RKState{}).AsMathRandSource()
 	_ mathRand.Source64 = (&RKState{}).AsMathRandSource()
