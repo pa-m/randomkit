@@ -248,6 +248,12 @@ func (state *RKState) Clone() rand.Source {
 	return &newstate
 }
 
+// Clone clones the randomkit state
+func (state *RKState) SourceClone() rand.Source {
+	newstate := *state
+	return &newstate
+}
+
 const maxUint64 = (1 << 64) - 1
 
 // Uint64n returns, as a uint64, a pseudo-random number in [0,n).
